@@ -9,7 +9,7 @@ var rl = readline.createInterface({
 });
 
 if(argv._.length != 2) {
-  console.log('Usage: gitbanner -f [font="7pt serif-bold"] -w [width=52] -g [gamma=1.4] <Github email> <text>');
+  console.log('Usage: gitbanner -f [font="7pt serif-bold"] -w [width=52] <Github email> <text>');
   process.exit();
 }
 
@@ -20,7 +20,6 @@ if(argv.w && argv.w > 52) {
 
 var image = gitbanner.createImage(argv._[1], {
   font: argv.f,
-  gamma: argv.g,
   width: argv.w
 });
 
