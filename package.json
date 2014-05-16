@@ -1,8 +1,8 @@
 {
   "name": "gitbanner",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Generates a git repo to show a cool banner on your Github profile",
-  "main": "bin/gitbanner",
+  "main": "index.js",
   "dependencies": {
     "canvas": "~1.1.3",
     "nodegit": "^0.1.3",
