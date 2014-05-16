@@ -1,6 +1,6 @@
 {
   "name": "gitbanner",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Generates a git repo to show a cool banner on your Github profile",
   "main": "index.js",
   "dependencies": {
@@ -9,6 +9,9 @@
     "optimist": "^0.6.1"
   },
   "devDependencies": {},
+  "bin": {
+    "gitbanner": "bin/gitbanner"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
