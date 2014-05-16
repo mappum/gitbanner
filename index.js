@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
 var Canvas = require('canvas');
+var fs = require('fs');
+var git = require('nodegit');
 
 var HEIGHT = 7; // height is always 7 (graph displays weeks)
 var WIDTH = 52; // width is always 52 (goes back 1 year)
@@ -51,4 +53,87 @@ function printImage(image) {
     console.log('Banner is wider than console, output is cut off');
 }
 
-printImage(createImage('Hello world'))
+function createRepo(image, opts, cb) {
+  if(typeof opts === 'function') {
+    cb = opts;
+    opts = null;
+  }
+  opts = opts || {};
+  opts.path = opts.path || './banner';
+  opts.quantity = opts.quantity || 20;
+  opts.author = opts.author || 'Gitbanner';
+  opts.message = opts.message || 'Gitbanner commit';
+
+  if(fs.existsSync(opts.path))
+    return cb('A repo already exists at path "' + opts.path + '"');
+
+  // create repo and a tree to commit to
+  git.Repo.init(opts.path, false, function(err, repo) {
+    if(err) return cb(err);
+    repo.openIndex(function(err, index) {
+      if(err) return cb(err);
+      index.writeTree(function(err, tree) {
+        if(err) return cb(err);
+
+        // set date to top left pixel
+        var date = new Date;
+        var dayOffset = 7 - date.getUTCDay();
+        date.setUTCDate(date.getUTCDate() - (52 * 7) + dayOffset);
+
+        var x = 0, y = 0;
+        var lastCommit;
+
+        function next(i) {
+          var pixel = image[y][x];
+          var nCommits = pixel * opts.quantity;
+
+          if(i < nCommits) {
+            var time = Math.floor(date.getTime() / 1000);
+            var author = git.Signature.create(opts.author, opts.email, time, 0);
+            var message = opts.message + ' - pixel:('+x+','+y+') - i:' + i; 
+            var parent = [];
+            if(lastCommit) parent[0] = lastCommit;
+
+            repo.createCommit('HEAD', author, author, message, tree, parent, function(err, res) {
+              if(err) return cb(err);
+
+              repo.getCommit(res, function(err, commit) {
+                if(err) return cb(err);
+
+                lastCommit = commit;
+                setImmediate(next, i + 1);
+              })
+            });
+
+          // incremement to next day/pixel
+          } else {
+            if(y == HEIGHT - 1) {
+              x++;
+              y = 0;
+
+              if(x == image[0].length) return cb();
+            } else {
+              y++;
+            }
+
+            date.setUTCDate(date.getUTCDate() + 1);
+
+            setImmediate(next, 0);
+          }
+        }
+        next(0, 0, 0);
+      });
+    });
+  });
+}
+
+var image = createImage('Hello world');
+printImage(image);
+
+var options = {
+  email: 'mappum@gmail.com'
+};
+createRepo(image, options, function(err) {
+  if(err) console.error(err);
+  else console.log('Successfully created repo at "' + (options.path || './banner') + '"');
+});
