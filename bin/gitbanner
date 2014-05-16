@@ -8,8 +8,10 @@ var rl = readline.createInterface({
   output: process.stdout
 });
 
-if(argv._.length != 2)
-  return console.log('Usage: gitbanner -f [font="7pt serif-bold"] -w [width=52] -g [gamma=1.4] <Github email> <text>');
+if(argv._.length != 2) {
+  console.log('Usage: gitbanner -f [font="7pt serif-bold"] -w [width=52] -g [gamma=1.4] <Github email> <text>');
+  process.exit();
+}
 
 if(argv.w && argv.w > 52) {
   console.log('! Width specified is greater than 52');
