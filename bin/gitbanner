@@ -1,0 +1,40 @@
+#!/usr/bin/env node
+
+var readline = require('readline');
+var gitbanner = require('../');
+var argv = require('optimist').argv;
+var rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+if(argv._.length != 2)
+  return console.log('Usage: gitbanner -f [font="7pt serif-bold"] -w [width=52] -g [gamma=1.4] <Github email> <text>');
+
+if(argv.w && argv.w > 52) {
+  console.log('! Width specified is greater than 52');
+  console.log('Some of your banner will be cut off on Github (but will be revealed as time progresses)');
+}
+
+var image = gitbanner.createImage(argv._[1], {
+  font: argv.f,
+  gamma: argv.g,
+  width: argv.w
+});
+
+console.log('Your banner will look like this:');
+gitbanner.printImage(image);
+
+rl.question('Generate repo? [Y/n]: ', function(res) {
+  if(res && res.toLowerCase() !== 'y') process.exit();
+
+  console.log('Building repo...');
+  var options = {
+    email: argv._[0]
+  };
+  gitbanner.createRepo(image, options, function(err) {
+    if(err) console.error('Error: ' + err);
+    else console.log('Successfully created repo at "' + (options.path || './banner') + '"');
+    process.exit();
+  });
+});

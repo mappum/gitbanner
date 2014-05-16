@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 var Canvas = require('canvas');
 var fs = require('fs');
 var git = require('nodegit');
@@ -9,10 +7,10 @@ var WIDTH = 52; // width is always 52 (goes back 1 year)
 var SHADES = 5; // 5 shades (grey for 0 commits, 4 levels of green for >0 commits)
 
 function createImage(text, opts) {
-  opts = {};
-  opts.font = opts.font || '7pt serif';
+  opts = opts || {};
+  opts.font = opts.font || '7pt serif-bold';
   opts.width = opts.width || WIDTH;
-  opts.gamma = opts.gamma || 1.2;
+  opts.gamma = opts.gamma || 1.4;
 
   var canvas = new Canvas(opts.width, HEIGHT),
       ctx = canvas.getContext('2d');
@@ -127,13 +125,8 @@ function createRepo(image, opts, cb) {
   });
 }
 
-var image = createImage('Hello world');
-printImage(image);
-
-var options = {
-  email: 'mappum@gmail.com'
+module.exports = {
+  createImage: createImage,
+  printImage: printImage,
+  createRepo: createRepo
 };
-createRepo(image, options, function(err) {
-  if(err) console.error(err);
-  else console.log('Successfully created repo at "' + (options.path || './banner') + '"');
-});
