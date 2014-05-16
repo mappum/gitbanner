@@ -46,6 +46,9 @@ function printImage(image) {
       s += levels[image[i][j]];
     console.log(s);
   }
+
+  if(width < image[0].length)
+    console.log('Banner is wider than console, output is cut off');
 }
 
 printImage(createImage('Hello world'))
