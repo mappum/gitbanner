@@ -1,0 +1,29 @@
+{
+  "name": "gitbanner",
+  "version": "0.0.0",
+  "description": "Generates a git repo to show a cool banner on your Github profile",
+  "main": "index.js",
+  "dependencies": {
+    "canvas": "~1.1.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:mappum/gitbanner.git"
+  },
+  "keywords": [
+    "git",
+    "github",
+    "banner",
+    "hack"
+  ],
+  "author": "Matt Bell <mappum@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mappum/gitbanner/issues"
+  },
+  "homepage": "https://github.com/mappum/gitbanner"
+}
