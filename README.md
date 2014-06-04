@@ -37,7 +37,7 @@ You will see a preview of your banner. If it doesn't look too great, try using a
 
 ```bash
 cd banner
-git push git@github.com:USERNAME/REPO_NAME.git master
+git push -f git@github.com:USERNAME/REPO_NAME.git master
 ```
 
 ## Notes
