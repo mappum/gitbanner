@@ -6,6 +6,8 @@ var HEIGHT = 7; // height is always 7 (graph displays weeks)
 var WIDTH = 52; // width is always 52 (goes back 1 year)
 var SHADES = 5; // 5 shades (grey for 0 commits, 4 levels of green for >0 commits)
 
+var README_PATH = 'README.md';
+
 function createImage(text, opts) {
   opts = opts || {};
   opts.font = opts.font || '7pt serif-bold';
@@ -70,57 +72,62 @@ function createRepo(image, opts, cb) {
     if(err) return cb(err);
     repo.openIndex(function(err, index) {
       if(err) return cb(err);
-      index.writeTree(function(err, tree) {
+      fs.writeFileSync(opts.path + '/' + README_PATH,
+        'Generated with [Gitbanner](https://github.com/mappum/gitbanner).\r\n');
+      index.addByPath(README_PATH, function(err) {
         if(err) return cb(err);
+        index.writeTree(function(err, tree) {
+          if(err) return cb(err);
 
-        // set date to top left pixel
-        var date = new Date;
-        var dayOffset = 7 - date.getUTCDay();
-        date.setUTCDate(date.getUTCDate() - (52 * 7) + dayOffset);
+          // set date to top left pixel
+          var date = new Date;
+          var dayOffset = 7 - date.getUTCDay();
+          date.setUTCDate(date.getUTCDate() - (52 * 7) + dayOffset);
 
-        var x = 0, y = 0;
-        var lastCommit;
+          var x = 0, y = 0;
+          var lastCommit;
 
-        function next(i) {
-          var pixel = image[y][x];
-          var nCommits = pixel * opts.quantity;
+          function next(i) {
+            var pixel = image[y][x];
+            var nCommits = pixel * opts.quantity;
 
-          if(i < nCommits) {
-            var time = Math.floor(date.getTime() / 1000);
-            var author = git.Signature.create(opts.author, opts.email, time, 0);
-            var message = opts.message + ' - pixel:('+x+','+y+') - i:' + i; 
-            var parent = [];
-            if(lastCommit) parent[0] = lastCommit;
+            if(i < nCommits) {
+              var time = Math.floor(date.getTime() / 1000);
+              var author = git.Signature.create(opts.author, opts.email, time, 0);
+              var message = opts.message + ' - pixel:('+x+','+y+') - i:' + i; 
+              var parent = [];
+              if(lastCommit) parent[0] = lastCommit;
 
-            repo.createCommit('HEAD', author, author, message, tree, parent, function(err, res) {
-              if(err) return cb(err);
-
-              repo.getCommit(res, function(err, commit) {
+              repo.createCommit('HEAD', author, author, message, tree, parent, function(err, res) {
                 if(err) return cb(err);
 
-                lastCommit = commit;
-                setImmediate(next, i + 1);
-              })
-            });
+                repo.getCommit(res, function(err, commit) {
+                  if(err) return cb(err);
 
-          // incremement to next day/pixel
-          } else {
-            if(y == HEIGHT - 1) {
-              x++;
-              y = 0;
+                  lastCommit = commit;
+                  setImmediate(next, i + 1);
+                })
+              });
 
-              if(x == image[0].length) return cb();
+            // incremement to next day/pixel
             } else {
-              y++;
+              if(y == HEIGHT - 1) {
+                x++;
+                y = 0;
+
+                if(x == image[0].length) return cb();
+              } else {
+                y++;
+              }
+
+              date.setUTCDate(date.getUTCDate() + 1);
+
+              setImmediate(next, 0);
             }
-
-            date.setUTCDate(date.getUTCDate() + 1);
-
-            setImmediate(next, 0);
           }
-        }
-        next(0, 0, 0);
-      });
+          next(0, 0, 0);
+        });
+      })
     });
   });
 }
