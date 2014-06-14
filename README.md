@@ -13,7 +13,7 @@ You can see an example on my profile: [https://github.com/mappum](https://github
 First, you might need to install some dependencies:
 
 * [node-canvas](https://github.com/LearnBoost/node-canvas/wiki) - (Cairo)
-* [nodegit](https://github.com/nodegit/nodegit#user-content-installing-dependencies) - (Python 2, CMake 2.8)
+* [nodegit](https://github.com/nodegit/nodegit)
 
 Once those are set up, just do
 
