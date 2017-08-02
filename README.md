@@ -6,7 +6,7 @@ Generates a git repo to show a cool banner on your Github profile.
 
 Gitbanner works by creating a new git repository and filling it with dummy commits, with dates set to correspond to the pixels on your Github "Contributions" graph.
 
-You can see an example on my profile: [https://github.com/mappum](https://github.com/mappum)
+You can see an example on @iamtrask's profile: [https://github.com/iamtrask](https://github.com/iamtrask)
 
 ## Installing
 
