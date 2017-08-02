@@ -26,12 +26,15 @@ var image = gitbanner.createImage(argv._[1], {
 console.log('Your banner will look like this:');
 gitbanner.printImage(image);
 
+
 rl.question('Generate repo? [Y/n]: ', function(res) {
   if(res && res.toLowerCase() !== 'y') process.exit();
 
   console.log('Building repo...');
   var options = {
-    email: argv._[0]
+    email: argv._[0],
+    offset: argv.o,
+    quantity: argv.q
   };
   gitbanner.createRepo(image, options, function(err) {
     if(err) console.error('Error: ' + err);

@@ -63,6 +63,7 @@ function createRepo(image, opts, cb) {
   opts.quantity = opts.quantity || 20;
   opts.author = opts.author || 'Gitbanner';
   opts.message = opts.message || 'Gitbanner commit';
+  opts.offset = opts.offset || 0;
 
   if(fs.existsSync(opts.path))
     return cb('A repo already exists at path "' + opts.path + '"');
@@ -80,7 +81,7 @@ function createRepo(image, opts, cb) {
           // set date to top left pixel
           var date = new Date;
           var dayOffset = 7 - date.getUTCDay();
-          date.setUTCDate(date.getUTCDate() - (52 * 7) + dayOffset);
+          date.setUTCDate(date.getUTCDate() - ((52 + opts.offset) * 7) + dayOffset);
 
           var x = 0, y = 0;
           var lastCommit;
