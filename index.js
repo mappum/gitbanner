@@ -68,10 +68,8 @@ function createRepo(image, opts, cb) {
     return cb('A repo already exists at path "' + opts.path + '"');
 
   // create repo and a tree to commit to
-  git.Repo.init(opts.path, false, function(err, repo) {
-    if(err) return cb(err);
-    repo.openIndex(function(err, index) {
-      if(err) return cb(err);
+  git.Repository.init(opts.path, 0).then(function(repo) {
+    repo.index().then(function(index) {
       fs.writeFileSync(opts.path + '/' + README_PATH,
         'Generated with [Gitbanner](https://github.com/mappum/gitbanner).\r\n');
       index.addByPath(README_PATH, function(err) {
@@ -94,7 +92,7 @@ function createRepo(image, opts, cb) {
             if(i < nCommits) {
               var time = Math.floor(date.getTime() / 1000);
               var author = git.Signature.create(opts.author, opts.email, time, 0);
-              var message = opts.message + ' - pixel:('+x+','+y+') - i:' + i; 
+              var message = opts.message + ' - pixel:('+x+','+y+') - i:' + i;
               var parent = [];
               if(lastCommit) parent[0] = lastCommit;
 
@@ -128,8 +126,8 @@ function createRepo(image, opts, cb) {
           next(0, 0, 0);
         });
       })
-    });
-  });
+    }).catch(function (err) { throw err });
+  }).catch(function (err) { throw err });
 }
 
 module.exports = {
